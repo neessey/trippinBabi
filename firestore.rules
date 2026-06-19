@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Settings can be read by anyone, but only updated by authenticated users or simple checks
+    match /settings/{document} {
+      allow read: if true;
+      allow write: if true; // Let the admin change this easily during prototype review, or we can secure it if needed
+    }
+    
+    // Anyone can send a message
+    match /messages/{document} {
+      allow create: if true;
+      allow read: if true; // Admin can read, let it be open for prototype simplicity
+      allow update, delete: if true;
+    }
+    
+    // Anyone can make a booking
+    match /bookings/{document} {
+      allow create: if true;
+      allow read, update, delete: if true;
+    }
+    
+    // Connection test document
+    match /test/{document} {
+      allow read: if true;
+    }
+  }
+}

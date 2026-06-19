@@ -1,0 +1,6 @@
+{
+  "name": "Trippin Babi",
+  "description": "L'art de vivre ivoirien, curaté avec soin. Un portail de séjours culturels, d'ateliers créatifs d'artisanat local, d'aventures guidées dans l'héritage ivoirien et un espace administrateur connecté à Firebase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
