@@ -14,93 +14,125 @@ export default function ExperiencesPage({ onBook, initialFilter = "all" }: Exper
   // List of premium authentic tourist activities
   const activities: ActivityCard[] = [
     {
-      id: "at-cuisine",
-      indexCode: "05",
-      title: "Secrets de Mijoterie",
-      category: "ateliers",
-      description: "Apprenez l'art des sauces ivoiriennes traditionnelles (Gouagouassou, Kpala, Kedjenou de poulet fermier) au feu de bois avec des mères de famille locales d'Abidjan.",
-      details: "Préparation complète de 3 plats traditionnels suivi d'un déjeuner convivial partagé.",
+      id: "eg-signature",
+      indexCode: "01",
+      title: "Escape games & Chasses urbaines",
+      category: "experiences",
+      description: "Partez à la découverte de Grand-Bassam, Abidjan ou Assinie à travers des scénarios immersifs mêlant énigmes, patrimoine et défis collaboratifs.",
+      details: "Expérience signature adaptée aux groupes, familles et entreprises.",
       paxLimit: "4 pax min.",
-      price: "35 000 F",
-      duration: "4 h"
+      price: "25 000 F / pers.",
+      duration: "3 h",
+      image: "/assets/experiences/escape-games.png"
     },
     {
-      id: "at-batik",
-      indexCode: "05",
-      title: "Teinture Artisanale Batik",
-      category: "ateliers",
-      description: "Initiez-vous aux techniques séculaires de teinture à la cire d'abeille et d'indigo avec des teinturiers professionnels de Grand-Bassam.",
-      details: "Créez et repartez avec votre propre coupon de tissu 100% coton personnalisé.",
-      paxLimit: "2 pax min.",
-      price: "30 000 F",
-      duration: "3.5 h"
-    },
-    {
-      id: "at-sculpture",
-      indexCode: "05",
-      title: "Sculpture sur Bois d'Ébène",
-      category: "ateliers",
-      description: "Taillez un masque d'inspiration sénoufo ou yacouba sous l'oeil bienveillant d'un artisan sculpteur dans son atelier de la lisière d'Abidjan.",
-      details: "Découverte des différentes essences de bois nobles et polissage final.",
-      paxLimit: "2 pax min.",
-      price: "40 000 F",
-      duration: "4 h"
-    },
-    {
-      id: "at-infuserie",
-      indexCode: "05",
-      title: "Arômes de l'Infuserie",
-      category: "ateliers",
-      description: "Plongez dans les secrets des plantes médicinales locales et de la théologie horticole d'Adzopé. Composez vos propres mélanges d'infusions bien-être.",
-      details: "Atelier aromatique olfactif avec un herboriste diplômé.",
-      paxLimit: "3 pax min.",
-      price: "25 000 F",
-      duration: "2.5 h"
-    },
-    {
-      id: "jr-bassam",
-      indexCode: "03",
-      title: "Échappée Historique à Bassam",
-      category: "journees",
-      description: "Une journée hors du temps dans la cité historique classée à l'UNESCO. Architecture coloniale, phare centenaire, déjeuner de fruits de mer en bordure d'Atlantique.",
-      details: "Visite guidée par un historien et balade exclusive en pirogue lagunaire.",
+      id: "escale-mondoukou",
+      indexCode: "02",
+      title: "L'Escale de Mondoukou",
+      category: "experiences",
+      description: "Circuit immersif au cœur de la lagune Aby et du village de Mondoukou, entre traditions, nature et rencontres locales.",
+      details: "Balades lagunaires, découverte culturelle et déjeuner traditionnel.",
       paxLimit: "4 pax min.",
       price: "55 000 F",
-      duration: "8 h"
+      duration: "1 journée",
+      image: "/assets/experiences/escale-mondoukou.jpg"
     },
     {
-      id: "jr-assinie",
-      indexCode: "03",
-      title: "L'éden Sauvage d'Assinie-Mafia",
-      category: "journees",
-      description: "Journée d'évasion nautique sur la lisière exclusive d'Assinie. Entre lagune sauvage bordée de palétuviers et l'océan Atlantique chaleureux.",
-      details: "Navigation privée, baignade, farniente écologique et déjeuner traditionnel les pieds dans l'eau.",
+      id: "operation-ehotile",
+      indexCode: "02",
+      title: "Opération Éhotilé",
+      category: "experiences",
+      description: "Une aventure en 4 étapes dans le village d'Ebouando à la découverte du patrimoine Éhotilé et de ses savoir-faire.",
+      details: "Parcours immersif ponctué d'épreuves et d'animations culturelles.",
       paxLimit: "6 pax min.",
-      price: "75 000 F",
-      duration: "10 h"
+      price: "65 000 F",
+      duration: "6 h",
+      image: "/assets/experiences/operation-ehotile.jpg"
     },
     {
-      id: "cr-senufo",
-      indexCode: "04",
-      title: "Sur les Terres du Peuple Sifolo",
-      category: "circuits",
-      description: "Une odyssée spirituelle de 3 jours dans le grand Nord ivoirien, de Korhogo à Boundiali. Découvrez le rythme sacré des Senufo, les fileuses de coton et la danse du panthère.",
-      details: "Hébergement éco-lodge de standing, transport 4x4 privé et guides rituels locaux agréés.",
-      paxLimit: "4 pax min.",
-      price: "280 000 F",
-      duration: "3 Jours"
-    },
-    {
-      id: "tb-escape",
+      id: "sikissa-6k",
       indexCode: "03",
-      title: "Team building Escape City",
-      category: "team-building",
-      description: "Une chasse aux énigmes grandeur nature dans le Plateau d'Abidjan ou les ruines de Cocody. Idéal pour stimuler l'esprit de cohésion, de stratégie et d'histoire locale.",
-      details: "Animateurs professionnels dédiés, carte géolocalisée interactive et rafraîchissements.",
-      paxLimit: "10 pax min.",
-      price: "25 000 F / pers.",
-      duration: "3 h"
-    }
+      title: "Sikissa & 6K Collectif",
+      category: "jeux-culturels",
+      description: "Jeux de découverte et animations culturelles conçus pour les groupes et les entreprises en quête d'expériences originales.",
+      details: "Format groupe avec défis, jeux d'équipe et immersion culturelle.",
+      paxLimit: "8 pax min.",
+      price: "20 000 F / pers.",
+      duration: "3 h",
+      image: "/assets/experiences/sikissa.jpg"
+    },
+    {
+  id: "mijoterie",
+  indexCode: "04",
+  title: " Mijoterie",
+  category: "ateliers",
+  description: "Découvrez les secrets de la cuisine ivoirienne à travers un atelier immersif mêlant traditions culinaires et savoir-faire locaux.",
+  details: "Préparation de recettes emblématiques et dégustation conviviale.",
+  paxLimit: "4 pax min.",
+  price: "30 000 F / pers.",
+  duration: "3 h",
+  image: "/assets/experiences/mijoterie.png"
+},
+{
+  id: "batik",
+  indexCode: "05",
+  title: "Batik",
+  category: "ateliers",
+  description: "Initiez-vous à l'art du batik et aux techniques traditionnelles de teinture sur tissu.",
+  details: "Création de motifs uniques et découverte des savoir-faire artisanaux.",
+  paxLimit: "4 pax min.",
+  price: "25 000 F / pers.",
+  duration: "2 h",
+  image: "/assets/experiences/batik.png"
+},
+{
+  id: "infuserie",
+  indexCode: "06",
+  title: "Infuserie",
+  category: "ateliers",
+  description: "Explorez les saveurs des plantes locales à travers la préparation de tisanes et d'infusions traditionnelles.",
+  details: "Dégustation et découverte des arômes et bienfaits des plantes.",
+  paxLimit: "4 pax min.",
+  price: "20 000 F / pers.",
+  duration: "2 h",
+  image: "/assets/experiences/infuserie.jpg"
+},
+{
+  id: "cacaoterie",
+  indexCode: "07",
+  title: "Cacaoterie",
+  category: "ateliers",
+  description: "Plongez dans l'univers du cacao ivoirien et découvrez chaque étape de sa transformation, de la fève à la tablette.",
+  details: "Atelier immersif avec dégustation et découverte des savoir-faire chocolatiers.",
+  paxLimit: "4 pax min.",
+  price: "35 000 F / pers.",
+  duration: "3 h",
+  image: "/assets/experiences/cacaoterie.png"
+},
+{
+  id: "poterie",
+  indexCode: "08",
+  title: "Poterie",
+  category: "ateliers",
+  description: "Initiez-vous aux techniques traditionnelles de modelage et découvrez l'art ancestral de la poterie ivoirienne.",
+  details: "Création d'objets en argile et découverte des savoir-faire artisanaux.",
+  paxLimit: "4 pax min.",
+  price: "30 000 F / pers.",
+  duration: "3 h",
+  image: "/assets/experiences/poterie.jpg"
+},
+{
+  id: "papoterie",
+  indexCode: "19",
+  title: "Papoterie",
+  category: "ateliers",
+  description: "Exprimez votre créativité à travers la décoration et la peinture sur pots et objets en céramique dans une ambiance conviviale.",
+  details: "Initiation aux techniques de peinture et personnalisation de votre création à emporter.",
+  paxLimit: "4 pax min.",
+  price: "25 000 F / pers.",
+  duration: "2 h",
+  image: "/assets/experiences/papoterie.png"
+}
   ];
 
   const filteredActivities = filter === "all" 
@@ -109,10 +141,9 @@ export default function ExperiencesPage({ onBook, initialFilter = "all" }: Exper
 
   const categoriesMap = [
     { id: "all", label: "TOUT" },
-    { id: "ateliers", label: "ATELIERS" },
-    { id: "journees", label: "JOURNÉES" },
-    { id: "circuits", label: "CIRCUITS" },
-    { id: "team-building", label: "TEAM BUILDING" }
+    { id: "experiences", label: "EXPÉRIENCES" },
+     { id: "ateliers", label: "ATELIERS" },
+    { id: "jeux-culturels", label: "JEUX CULTURELS" }
   ];
 
   return (
@@ -139,7 +170,7 @@ export default function ExperiencesPage({ onBook, initialFilter = "all" }: Exper
             onClick={() => setFilter(cat.id)}
             className={`text-[10px] md:text-xs font-bold tracking-[0.2em] px-5 py-3 border transition-all duration-300 uppercase cursor-pointer ${
               filter === cat.id
-                ? "bg-[#352115] border-[#352115] text-white"
+                ? "bg-[#d5a63d] border-[#d5a63d] text-white"
                 : "border-[#E8E0D5] text-[#7E695D] hover:border-[#352115] hover:text-[#352115]"
             }`}
           >
@@ -149,60 +180,82 @@ export default function ExperiencesPage({ onBook, initialFilter = "all" }: Exper
       </div>
 
       {/* Grid displays filtered components */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="experiences-grid">
+      <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-8" id="experiences-grid">
         {filteredActivities.map((act, idx) => (
           <motion.div
             key={act.id}
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: idx * 0.1 }}
-            className="bg-[#FAF6EE] border border-[#E8E0D5] p-6 hover:shadow-lg hover:border-[#9A6F4C]/40 transition-all duration-300 flex flex-col justify-between h-[420px] relative group"
+            className="bg-[#FAF6EE] border border-[#E8E0D5] rounded-3xl hover:shadow-lg hover:border-[#9A6F4C]/40 transition-all duration-300 flex flex-col group overflow-hidden"
             id={`experience-item-${act.id}`}
           >
-            {/* Index code label */}
-            <div className="flex items-center justify-between pb-4 border-b border-[#E8E0D5]/50">
-              <span className="text-[10px] font-sans font-bold tracking-[0.2em] text-[#9A6F4C]">
-                {act.indexCode} · {act.category.toUpperCase()}
-              </span>
-              <span className="text-xs font-serif font-bold text-[#352115]">
+            {/* IMAGE - Ajoutée en haut de la carte */}
+            <div className="relative w-full h-56 overflow-hidden bg-[#E8E0D5]">
+              <img 
+                src={act.image} 
+                alt={act.title}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+                onError={(e) => {
+                  // Fallback si l'image ne charge pas
+                  (e.target as HTMLImageElement).src = '/images/fallback.jpg';
+                }}
+              />
+              {/* Badge overlay */}
+              <div className="absolute top-3 left-3 bg-[#352115]/80 backdrop-blur-sm text-white text-[9px] font-bold tracking-[0.15em] px-3 py-1.5 uppercase">
+                {act.category === "experiences" ? "EXPÉRIENCE" : "JEU CULTUREL"}
+              </div>
+              {/* Prix overlay */}
+              <div className="absolute top-3 right-3 bg-[#d5a63d] text-white text-xs font-bold px-3 py-1.5">
                 {act.price}
-              </span>
-            </div>
-
-            {/* Typography content and metadata description */}
-            <div className="py-6 flex-1 flex flex-col justify-start space-y-4">
-              <h3 className="text-xl md:text-2xl font-serif text-[#352115] font-light leading-tight group-hover:text-[#9A6F4C] transition-colors duration-200">
-                {act.title}
-              </h3>
-              
-              <p className="text-xs md:text-sm text-[#7E695D] font-sans font-light leading-relaxed line-clamp-3">
-                {act.description}
-              </p>
-
-              {/* Extended meta data bullets */}
-              <div className="pt-3 space-y-2 text-[11px] font-sans text-[#7E695D]/80">
-                <div className="flex items-center space-x-2">
-                  <Clock className="w-3.5 h-3.5 text-[#9A6F4C] shrink-0" />
-                  <span>DURÉE : <strong>{act.duration}</strong></span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Users className="w-3.5 h-3.5 text-[#9A6F4C] shrink-0" />
-                  <span>GROUPE : <strong>{act.paxLimit}</strong></span>
-                </div>
               </div>
             </div>
 
-            {/* Book trigger panel footer */}
-            <div className="border-t border-[#E8E0D5]/50 pt-4 flex items-center justify-between">
-              <span className="text-[9px] font-sans font-bold tracking-[0.2em] text-[#7E695D] uppercase">
-                EXPLOREZ AUJOURD'HUI
-              </span>
-              <button
-                onClick={() => onBook(act.title)}
-                className="bg-[#352115] hover:bg-[#9A6F4C] text-[#FAF6EE] text-[9px] font-bold tracking-[0.18em] px-4 py-3.5 transition-colors uppercase cursor-pointer"
-              >
-                RÉSERVER
-              </button>
+            {/* CONTENU */}
+            <div className="p-6 flex flex-col flex-1">
+              {/* Index code label */}
+              <div className="flex items-center justify-between pb-4 border-b border-[#E8E0D5]/50">
+                <span className="text-[10px] font-sans font-bold tracking-[0.2em] text-[#9A6F4C]">
+                  {act.indexCode} · {act.category.toUpperCase()}
+                </span>
+              </div>
+
+              {/* Typography content and metadata description */}
+              <div className="py-6 flex-1 flex flex-col justify-start space-y-4">
+                <h3 className="text-xl md:text-2xl font-serif text-[#352115] font-light leading-tight group-hover:text-[#9A6F4C] transition-colors duration-200">
+                  {act.title}
+                </h3>
+                
+                <p className="text-xs md:text-sm text-[#7E695D] font-sans font-light leading-relaxed line-clamp-3">
+                  {act.description}
+                </p>
+
+                {/* Extended meta data bullets */}
+                <div className="pt-3 space-y-2 text-[11px] font-sans text-[#7E695D]/80">
+                  <div className="flex items-center space-x-2">
+                    <Clock className="w-3.5 h-3.5 text-[#9A6F4C] shrink-0" />
+                    <span>DURÉE : <strong>{act.duration}</strong></span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Users className="w-3.5 h-3.5 text-[#9A6F4C] shrink-0" />
+                    <span>GROUPE : <strong>{act.paxLimit}</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Book trigger panel footer */}
+              <div className="border-t border-[#E8E0D5]/50 pt-4 flex items-center justify-between">
+                <span className="text-[9px] font-sans font-bold tracking-[0.2em] text-[#7E695D] uppercase">
+                  EXPLOREZ AUJOURD'HUI
+                </span>
+                <button
+                  onClick={() => onBook(act.title)}
+                  className="bg-[#352115] hover:bg-[#9A6F4C] text-[#FAF6EE] text-[9px] font-bold tracking-[0.18em] px-4 py-3.5 transition-colors uppercase cursor-pointer"
+                >
+                  RÉSERVER
+                </button>
+              </div>
             </div>
           </motion.div>
         ))}

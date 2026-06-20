@@ -438,11 +438,7 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
                   <Shield className="w-4 h-4" /><span>SE CONNECTER</span>
                 </button>
               </form>
-              <div className="text-[10px] tracking-wide text-[#7E695D] border-t border-[#E8E0D5] pt-4 mt-2 space-y-1 text-left">
-                <p className="font-semibold text-[#352115]">🔐 Directives d'usine :</p>
-                <p>Code d'origine : <strong className="text-[#352115] font-mono">babi2026</strong></p>
-                <p className="italic text-[9.5px]">Le code d'accès peut être modifié à volonté une fois connecté.</p>
-              </div>
+              
             </>
           ) : (
             <div className="space-y-6 animate-[fadeIn_0.2s_ease-out]">
@@ -565,14 +561,14 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
                   </div>
                 </div>
                 <div className="flex flex-col space-y-1">
-                  <label className="font-semibold tracking-wider text-[#352115] uppercase text-xs">AURA DE L'EXPÉRIENCE (SÉLECTIONNER UNE IMAGE DEPUIS VOTRE ORDINATEUR)</label>
+                  <label className="font-semibold tracking-wider text-[#352115] uppercase text-xs">AURA DE L'EXPÉRIENCE </label>
                   <div onDragOver={handleDragOver} onDragLeave={handleDragLeave} onDrop={handleDrop}
                     className={`border-2 border-dashed rounded p-5 transition-all duration-200 flex flex-col items-center justify-center cursor-pointer ${isDragging ? "border-[#9A6F4C] bg-[#ECE4D8]" : imageUrl ? "border-[#E8E0D5] bg-[#FAF6EE]/50 hover:bg-[#FAF6EE]" : "border-[#E8E0D5] hover:border-[#9A6F4C] hover:bg-[#FAF6EE]"}`}>
                     <input id="local-image-upload" type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
                     {imageUrl ? (
                       <div className="relative w-full max-w-md flex flex-col items-center text-center">
                         <img src={imageUrl} alt="Aperçu" className="w-full max-h-48 object-cover rounded border border-[#E8E0D5] shadow-sm mb-3" referrerPolicy="no-referrer" />
-                        <p className="text-[10px] text-gray-500 font-mono mb-2 truncate max-w-full">{imageUrl.startsWith("data:") ? "Image encodée localement (prête à être enregistrée)" : imageUrl}</p>
+                        <p className="text-[10px] text-gray-500 font-mono mb-2 truncate max-w-full">{imageUrl.startsWith("data:") ? "" : imageUrl}</p>
                         <div className="flex space-x-2">
                           <label htmlFor="local-image-upload" className="bg-white px-3 py-1.5 text-[10px] font-semibold border border-[#E8E0D5] hover:bg-[#F5EFE6] text-[#352115] rounded transition-colors uppercase cursor-pointer">Changer l'image</label>
                           <button type="button" onClick={() => setImageUrl("")} className="bg-red-50 hover:bg-red-100 text-red-700 px-3 py-1.5 text-[10px] font-semibold border border-red-200 rounded transition-colors uppercase cursor-pointer">Supprimer la photo</button>
@@ -646,7 +642,7 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
             <div className="bg-[#EFEAE0] p-6 md:p-8 border border-[#E8E0D5] rounded-xs text-left animate-[fadeIn_0.2s_ease-out] space-y-6">
               <div className="space-y-1 border-b border-[#E8E0D5] pb-3">
                 <h2 className="text-2xl font-serif text-[#352115] font-light flex items-center gap-2"><Shield className="w-5 h-5 text-[#9A6F4C]" /><span>Sécurité d'Accès Globale</span></h2>
-                <p className="text-xs text-[#7E695D] font-sans">Gérez la clé d'authentification de la console d'administration, le pare-feu d'IP, l'expiration de session et contrôlez le journal d'audit des tentatives d'accès.</p>
+                <p className="text-xs text-[#7E695D] font-sans">Gérez la clé d'authentification de la console d'administration, l'expiration de session et contrôlez le journal d'audit des tentatives d'accès.</p>
               </div>
               {securityConfigSaveStatus && <div className="p-3 text-xs bg-[#352115] text-[#FAF6EE] border border-[#E8E0D5]/20 font-sans tracking-wide">{securityConfigSaveStatus}</div>}
               <form onSubmit={handleSecConfigSave} className="space-y-4 text-xs font-sans">
@@ -669,28 +665,6 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
                     <input type="number" min={2} max={120} required value={securityConfig.sessionTimeoutMinutes} onChange={(e) => setSecurityConfig(prev => ({ ...prev, sessionTimeoutMinutes: parseInt(e.target.value) || 30 }))} className="p-3 bg-[#FAF6EE] border border-[#E8E0D5] text-sm text-[#352115] focus:outline-none focus:border-[#9A6F4C]" />
                     <p className="text-[10px] text-[#7E695D]">Auto-déconnexion pour inactivité.</p>
                   </div>
-                </div>
-                <div className="flex flex-col space-y-1">
-                  <label className="font-semibold tracking-wider text-[#352115] uppercase">Restriction d'Adresses IP du Pare-feu (Simulé)</label>
-                  <input type="text" value={securityConfig.allowedIPsString} onChange={(e) => setSecurityConfig(prev => ({ ...prev, allowedIPsString: e.target.value }))} placeholder="Laisser vide pour tout autoriser, ou entrez Ex: 192.168.1.100" className="p-3 bg-[#FAF6EE] border border-[#E8E0D5] text-sm text-[#352115] focus:outline-none focus:border-[#9A6F4C] font-mono" />
-                  <p className="text-[10px] text-[#7E695D] leading-relaxed">Saisissez <strong className="font-mono">192.168.1.100</strong> (l'IP simulée de votre console actuelle) ou laissez vide pour autoriser toutes les IP.</p>
-                </div>
-                <div className="space-y-4 pt-2 border-t border-[#E8E0D5]/50">
-                  {[
-                    { key: "isTwoFactorSimulated", label: "🔒 Identification Double Facteur MFA", desc: "Exige l'entrée d'un code unique éphémère à chaque connexion.", color: "text-[#352115]" },
-                    { key: "isSystemReadOnly", label: "⚠️ Bloquer en Mode Lecture Seule", desc: "Vigile absolue : empêche toute modification, confirmation ou envoi de mail.", color: "text-amber-900" },
-                  ].map(({ key, label, desc, color }) => (
-                    <div key={key} className="flex items-center justify-between p-3 bg-[#FAF6EE] border border-[#E8E0D5] rounded-xs">
-                      <div className="space-y-0.5 text-left pr-4">
-                        <span className={`font-bold ${color} block uppercase text-[10px] tracking-wider`}>{label}</span>
-                        <span className="text-[10px] text-[#7E695D] block">{desc}</span>
-                      </div>
-                      <button type="button" onClick={() => setSecurityConfig(prev => ({ ...prev, [key]: !prev[key as keyof SecurityConfig] }))}
-                        className={`w-12 h-6 rounded-full p-0.5 transition-colors duration-200 focus:outline-none ease-in-out shrink-0 ${securityConfig[key as keyof SecurityConfig] ? "bg-amber-600" : "bg-neutral-300"}`}>
-                        <div className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform duration-200 ${securityConfig[key as keyof SecurityConfig] ? "translate-x-6" : "translate-x-0"}`} />
-                      </button>
-                    </div>
-                  ))}
                 </div>
                 <button type="submit" className="w-full bg-[#352115] hover:bg-[#1C0F0A] text-white text-xs font-bold tracking-[0.2em] py-5 transition-colors uppercase cursor-pointer flex items-center justify-center space-x-2">
                   <Save className="w-4 h-4" /><span>SAUVEGARDER LES PARAMÈTRES SECURITÉ</span>
@@ -836,7 +810,7 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
               {emailSendSuccess && (
                 <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 text-xs font-sans flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 animate-bounce" />
-                  <span>Email de confirmation envoyé avec succès via EmailJS !</span>
+                  <span>Email de confirmation envoyé avec succès !</span>
                 </div>
               )}
               {emailSendError && (
@@ -861,9 +835,7 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
                   SANS NOTIFICATION
                 </button>
               </div>
-              <p className="text-[9.5px] text-[#7E695D] text-center leading-relaxed font-sans">
-                Confirmer modifiera le statut à <strong className="text-emerald-800">"confirmed"</strong> dans Firestore.
-              </p>
+              
             </div>
           </div>
         </div>

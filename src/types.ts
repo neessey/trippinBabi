@@ -15,11 +15,12 @@ export interface ActivityCard {
   indexCode: string;
   title: string;
   description: string;
-  category: "ateliers" | "journees" | "circuits" | "team-building";
+  category: "experiences" | "jeux-culturels" | "circuits" | "team-building" | "ateliers";
   details: string;
   paxLimit: string;
   price: string;
   duration: string;
+  image: string
 }
 
 export interface ContactMessage {

@@ -113,23 +113,41 @@ export default function BookingModal({ isOpen, onClose, defaultActivityTitle = "
             <div className="space-y-4 text-xs font-sans">
               
               {/* Activity Picker */}
-              <div className="flex flex-col space-y-1">
-                <label className="font-semibold tracking-wider text-[#352115] uppercase">EXPÉRIENCE CHOISIE *</label>
-                <select
-                  value={activity}
-                  onChange={(e) => setActivity(e.target.value)}
-                  className="bg-[#FAF6EE] border border-[#E8E0D5] p-3 text-[#352115] focus:outline-none focus:border-[#9A6F4C] text-sm"
-                >
-                  <option value="La Cacaoterie">La Cacaoterie — de la fève à la tablette</option>
-                  <option value="Atelier Cuisine Ivoirenne">Atelier Cuisine Ivoirenne — Secrets de Mijoterie</option>
-                  <option value="Atelier Batik">Atelier Batik — Teinture traditionnelle</option>
-                  <option value="Atelier Boiserie">Atelier Boiserie — Sculpture sur bois noble</option>
-                  <option value="Atelier Infuserie">Atelier Infuserie — Tisanes locales et arômes</option>
-                  <option value="Circuit historique Grand-Bassam">Circuit historique Grand-Bassam — Cité coloniale</option>
-                  <option value="Journée Assinie">Journée Assinie — Lisière entre lagune et mer</option>
-                  <option value="Team building Escape City">Team building Escape City — Sur la piste d'Abidjan</option>
-                </select>
-              </div>
+             <div className="flex flex-col space-y-2">
+  <label className="font-semibold tracking-wider text-[#352115] uppercase">
+    EXPÉRIENCE CHOISIE *
+  </label>
+
+  <div className="flex gap-3 overflow-x-auto pb-3">
+    {[
+      ["cacaoterie", "La Cacaoterie"],
+      ["batik", "Atelier Batik"],
+      ["infuserie", "L'Infuserie"],
+      ["mijoterie", "La Mijoterie"],
+      ["atelier-boiserie", "Boiserie"],
+      ["poterie", "Poterie"],
+      ["papoterie", "Papoterie"],
+      ["eg-signature", "Escape Games"],
+      ["escale-mondoukou", "Escale Mondoukou"],
+      ["operation-ehotile", "Opération Éhotilé"],
+      ["sikissa-6k", "Sikissa & 6K"]
+    ].map(([value, title]) => (
+      <button
+        key={value}
+        type="button"
+        onClick={() => setActivity(value)}
+        className={`shrink-0 px-5 py-3 border text-sm transition-all
+        ${
+          activity === value
+            ? "bg-[#352115] text-white border-[#352115]"
+            : "bg-[#FAF6EE] border-[#E8E0D5] text-[#352115] hover:border-[#9A6F4C]"
+        }`}
+      >
+        {title}
+      </button>
+    ))}
+  </div>
+</div>
 
               {/* Full Name */}
               <div className="flex flex-col space-y-1">

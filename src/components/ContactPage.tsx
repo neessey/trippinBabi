@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { motion } from "motion/react";
 import { MapPin, Phone, Mail, Send, Check } from "lucide-react";
-import { createContactRequest } from "../lib/firebase";
+import emailjs from '@emailjs/browser';
+
+const EMAILJS_SERVICE_ID = (import.meta as any).env.VITE_EMAILJS_SERVICE_ID;
+const EMAILJS_TEMPLATE_ID = (import.meta as any).env.VITE_EMAILJS_TEMPLATE_ID;
+const EMAILJS_PUBLIC_KEY = (import.meta as any).env.VITE_EMAILJS_PUBLIC_KEY;
 
 export default function ContactPage() {
   const [name, setName] = useState("");
@@ -11,26 +15,49 @@ export default function ContactPage() {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name || !email || !message) return;
+    
+    // Validation
+    if (!name || !email || !message) {
+      setError("Veuillez remplir tous les champs obligatoires.");
+      return;
+    }
 
     setIsSubmitting(true);
+    setError("");
+
     try {
-      await createContactRequest({
-        name,
-        email,
-        subject,
-        message
-      });
-      setIsSuccess(true);
-      setName("");
-      setEmail("");
-      setMessage("");
-      setTimeout(() => setIsSuccess(false), 5000);
+      // Envoi via EmailJS avec les variables du template
+      const result = await emailjs.send(
+        EMAILJS_SERVICE_ID,
+        EMAILJS_TEMPLATE_ID,
+        {
+          title: subject,        // Correspond à {{title}}
+          name: name,            // Correspond à {{name}}
+          email: email,          // Correspond à {{email}}
+          message: message,      // Le contenu du message
+        },
+        EMAILJS_PUBLIC_KEY
+      );
+
+      console.log("Email envoyé avec succès:", result);
+
+      if (result.status === 200) {
+        setIsSuccess(true);
+        // Réinitialiser le formulaire
+        setName("");
+        setEmail("");
+        setMessage("");
+        setSubject("Demande d'information générale");
+        // Cacher le message de succès après 5 secondes
+        setTimeout(() => setIsSuccess(false), 5000);
+      }
     } catch (err) {
-      console.error(err);
+      console.error("Erreur d'envoi d'email:", err);
+      setError("Une erreur est survenue lors de l'envoi. Veuillez réessayer.");
     } finally {
       setIsSubmitting(false);
     }
@@ -64,8 +91,8 @@ export default function ContactPage() {
             <div className="space-y-1.5 text-left">
               <h3 className="font-serif text-lg text-[#352115] font-medium">Bureaux d'Abidjan</h3>
               <p className="text-xs text-[#7E695D] font-sans leading-relaxed">
-                Rue des Jardins, Vallon, <br />
-                Deux Plateaux, Cocody, Abidjan, Côte d'Ivoire
+                Quartier de la angré, Angré <br />
+                8ème Tranche, Cocody, Abidjan, Côte d'Ivoire
               </p>
             </div>
           </div>
@@ -77,8 +104,8 @@ export default function ContactPage() {
             <div className="space-y-1.5 text-left">
               <h3 className="font-serif text-lg text-[#352115] font-medium">Permanence téléphonique</h3>
               <p className="text-xs text-[#7E695D] font-sans">
-                Lundi - Samedi : 08:00 - 18:00 (GMT) <br className="mb-1" />
-                <strong>+225 07 88 55 22 11</strong>
+                Lundi - Samedi : 08:00 - 18:00  <br className="mb-1" />
+                <strong>+225 07 87 07 13 36</strong>
               </p>
             </div>
           </div>
@@ -91,19 +118,8 @@ export default function ContactPage() {
               <h3 className="font-serif text-lg text-[#352115] font-medium">Courrier électronique</h3>
               <p className="text-xs text-[#7E695D] font-sans">
                 Informations & Partenariats : <br className="mb-1" />
-                <strong className="text-[#9A6F4C]">hello@trippinbabi.ci</strong>
+                <strong className="text-[#9A6F4C]">hello@trippinbabi.com</strong>
               </p>
-            </div>
-          </div>
-
-          {/* Map mockup wrapper */}
-          <div className="relative border border-[#E8E0D5] h-56 bg-[#EFEAE0] overflow-hidden">
-            <div className="absolute inset-0 bg-stone-400/10 pointer-events-none flex items-center justify-center font-serif text-xs italic text-[#7E695D]">
-              [ Carte d'Abidjan interactive ]
-            </div>
-            {/* Elegant Map overlay visuals */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-[#9A6F4C]/20 border border-[#9A6F4C] flex items-center justify-center animate-pulse">
-              <div className="w-2.5 h-2.5 bg-[#9A6F4C] rounded-full" />
             </div>
           </div>
 
@@ -183,14 +199,25 @@ export default function ContactPage() {
                 />
               </div>
 
+              {/* Message d'erreur */}
+              {error && (
+                <div className="text-red-600 text-xs font-medium bg-red-50 p-3 border border-red-200 rounded">
+                  ⚠️ {error}
+                </div>
+              )}
+
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#352115] hover:bg-[#1C0F0A] text-white text-[11px] font-bold tracking-[0.25em] py-5 transition-colors duration-300 disabled:opacity-50 uppercase cursor-pointer flex items-center justify-center space-x-2"
+                className="w-full bg-[#d5a63d] hover:bg-[#1C0F0A] text-white text-[11px] font-bold tracking-[0.25em] py-5 transition-colors duration-300 disabled:opacity-50 uppercase cursor-pointer flex items-center justify-center space-x-2"
               >
                 <Send className="w-4 h-4" />
                 <span>{isSubmitting ? "ENVOI EN COURS..." : "TRANSMETTRE LE MESSAGE"}</span>
               </button>
+
+              <p className="text-[10px] text-[#7E695D]/60 text-center">
+                En soumettant ce formulaire, vous acceptez que vos données soient utilisées pour vous recontacter.
+              </p>
             </form>
           )}
 

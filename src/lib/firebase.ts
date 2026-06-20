@@ -94,15 +94,15 @@ export interface MonthlyActivity {
 
 // Default values matching the photo exactly!
 export const DEFAULT_MONTHLY_ACTIVITY: MonthlyActivity = {
-  title: "La Cacaoterie —",
+  title: "La Cacaoterie ",
   italicTitle: "de la fève à la tablette.",
   description: "Une matinée immersive auprès d'un maître chocolatier ivoirien. Torréfaction, concassage, conchage : repartez avec votre propre tablette signée, et une nouvelle lecture du terroir cacao.",
   duration: "3 h",
   groupSize: "5 pax min.",
   price: "45 000 F",
   monthDate: "JANVIER 2026",
-  imageUrl: "/src/assets/images/cocoa_artisan_1781884316543.jpg",
-  programmeComplet: "# Programme de l'Atelier La Cacaoterie\n\n- Accueil chaleureux avec une infusion traditionnelle de coques de cacao.\n- Introduction théorique à l'histoire du cacao en Côte d'Ivoire.\n- Étape 1 : Torréfaction des fèves brutes pour développer les arômes.\n- Étape 2 : Concassage scientifique et séparation des coques.\n- Étape 3 : Conchage artisanal et ajout d'épices locales (fleur de sel de Grand-Assinie, piment d'Espelette, vanille sauvage).\n- Étape 4 : Moulage et personnalisation de votre tablette.\n- Repartez avec votre création unique emballée par vos soins et un livret souvenir."
+  imageUrl: "/src/assets/images/cacao.png",
+  programmeComplet: " Programme de l'Atelier La Cacaoterie\n\n- Accueil chaleureux avec une infusion traditionnelle de coques de cacao.\n- Introduction théorique à l'histoire du cacao en Côte d'Ivoire.\n- Étape 1 : Torréfaction des fèves brutes pour développer les arômes.\n- Étape 2 : Concassage scientifique et séparation des coques.\n- Étape 3 : Conchage artisanal et ajout d'épices locales (fleur de sel de Grand-Assinie, piment d'Espelette, vanille sauvage).\n- Étape 4 : Moulage et personnalisation de votre tablette.\n- Repartez avec votre création unique emballée par vos soins et un livret souvenir."
 };
 
 // Functions to manage Activity of the Month in Firestore

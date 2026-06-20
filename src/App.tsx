@@ -253,9 +253,9 @@ export default function App() {
                       Guidé par nos maîtres chocolatiers agréés locaux d'Abidjan, cet atelier participatif est un moment de symbiose parfaite entre savoir-faire traditionnel et raffinement premium.
                     </p>
                     {monthlyActivity.programmeComplet ? (
-                      <div className="bg-[#EFEAE0] p-6 border border-[#E8E0D5] rounded-xs mt-6 space-y-3 font-serif italic text-[#352115]">
+                      <div className="bg-[#d5a63d] p-6 border border-[#352115] rounded-2xl mt-6 space-y-3 font-serif italic text-[#352115]">
                         <h4 className="text-lg font-bold">Inclus dans la formule :</h4>
-                        <p className="whitespace-pre-line font-sans not-italic text-sm text-[#7E695D]">
+                        <p className="whitespace-pre-line font-sans not-italic text-sm text-white">
                           {monthlyActivity.programmeComplet}
                         </p>
                       </div>

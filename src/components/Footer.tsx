@@ -93,14 +93,7 @@ export default function Footer({ onNavigate, onExploreCategory }: FooterProps) {
                 Expériences sur-mesure
               </button>
             </li>
-            <li>
-              <button 
-                onClick={() => onNavigate("corporate")}
-                className="hover:text-white hover:underline transition-colors cursor-pointer text-left"
-              >
-                Réalisations
-              </button>
-            </li>
+            
             <li>
               <button 
                 onClick={() => onNavigate("contact")}

@@ -44,14 +44,14 @@ export default function Hero({ onDiscover, onCorporate }: HeroProps) {
               className="bg-[#352115] hover:bg-[#4d3221] text-white text-[11px] font-bold tracking-[0.2em] px-8 py-5 transition-all duration-300 shadow-sm active:scale-[0.98] uppercase text-center cursor-pointer"
               id="discover-experiences-btn"
             >
-              DÉCOUVRIR LES EXPÉRIENCES
+              EXPÉRIENCES
             </button>
             <button
               onClick={onCorporate}
-              className="border border-[#7E695D]/30 hover:border-[#352115] hover:bg-[#352115]/5 text-[#352115] text-[11px] font-bold tracking-[0.2em] px-8 py-5 transition-all duration-300 active:scale-[0.98] uppercase text-center cursor-pointer"
+              className="border border-[#7E695D]/30 hover:border-[#352115] hover:bg-[#d5a63d] text-[#352115] text-[11px] font-bold tracking-[0.2em] px-8 py-5 transition-all duration-300 active:scale-[0.98] uppercase text-center cursor-pointer"
               id="corporate-hotels-btn"
             >
-              CORPORATE & HÔTELS
+              CORPORATE
             </button>
           </div>
         </motion.div>

@@ -44,17 +44,20 @@ export default function CorporatePage() {
     {
       icon: Building,
       title: "Team Building d'Exception",
-      desc: "Créer de la cohésion autour d'ateliers de poterie, chasses au trésor côtières, ou escapades nautiques privatisées à Assinie."
+      desc: "Créer de la cohésion autour d'ateliers de poterie, chasses au trésor côtières, ou escapades nautiques privatisées à Assinie.",
+      image: "/assets/team-building.jpg" 
     },
     {
       icon: Landmark,
       title: "Séminaires Culturels",
-      desc: "Réunissez vos cadres et investisseurs dans des décors coloniaux authentiques de Grand-Bassam ou des havres discrets d'Abidjan."
+      desc: "Réunissez vos cadres et investisseurs dans des décors coloniaux authentiques de Grand-Bassam ou des havres discrets d'Abidjan.",
+      image: "/assets/seminaires-culturels.jpg"
     },
     {
       icon: Sparkles,
       title: "Activations Clé en Main",
-      desc: "De la logistique sécurisée en 4x4 de luxe à la restauration gastronomique par de grands chefs de cuisine ivoirienne."
+      desc: "De la logistique sécurisée en 4x4 de luxe à la restauration gastronomique par de grands chefs de cuisine ivoirienne.",
+      image: "/assets/activations-cleen-main.jpg"
     }
   ];
 
@@ -74,8 +77,8 @@ export default function CorporatePage() {
         </p>
       </div>
 
-      {/* Tripping elements grid */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8" id="corporate-features-grid">
+      {/* Tripping elements grid avec images */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 " id="corporate-features-grid">
         {features.map((feat, idx) => {
           const Icon = feat.icon;
           return (
@@ -85,24 +88,37 @@ export default function CorporatePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: idx * 0.15 }}
-              className="border border-[#E8E0D5] p-8 bg-[#FAF6EE] text-left hover:border-[#9A6F4C] transition-all duration-300"
+              className="border border-[#E8E0D5] bg-[#FAF6EE] rounded-3xl text-left hover:border-[#9A6F4C] transition-all duration-300 overflow-hidden"
             >
-              <div className="w-12 h-12 bg-[#9A6F4C]/10 border border-[#9A6F4C]/20 rounded-full flex items-center justify-center text-[#9A6F4C] mb-6">
-                <Icon className="w-5 h-5" />
+              {/* Image en haut */}
+              <div className="relative w-full h-48 overflow-hidden bg-[#E8E0D5]">
+                <img 
+                  src={feat.image} 
+                  alt={feat.title}
+                  className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+                  loading="lazy" // Pour optimiser le chargement
+                />
               </div>
-              <h3 className="text-xl font-serif text-[#352115] font-normal mb-3">
-                {feat.title}
-              </h3>
-              <p className="text-xs md:text-sm text-[#7E695D] font-sans font-light leading-relaxed">
-                {feat.desc}
-              </p>
+              
+              {/* Contenu existant */}
+              <div className="p-8 ">
+                <div className="w-12 h-12 bg-[#9A6F4C]/10 border border-[#9A6F4C]/20 rounded-full flex items-center justify-center text-[#9A6F4C] mb-6">
+                  <Icon className="w-5 h-5" />
+                </div>
+                <h3 className="text-xl font-serif text-[#352115] font-normal mb-3">
+                  {feat.title}
+                </h3>
+                <p className="text-xs md:text-sm text-[#7E695D] font-sans font-light leading-relaxed">
+                  {feat.desc}
+                </p>
+              </div>
             </motion.div>
           );
         })}
       </div>
 
       {/* Quote request layout split block */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 bg-[#EFEAE0] border border-[#E8E0D5] p-8 md:p-12 items-start" id="quote-block">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 rounded-2xl bg-[#d5a63d] border border-[#E8E0D5] p-8 md:p-12 items-start" id="quote-block">
         
         {/* Left Side Quote Promo */}
         <div className="lg:col-span-5 space-y-6">
@@ -136,21 +152,21 @@ export default function CorporatePage() {
         </div>
 
         {/* Right Side Intake Form */}
-        <div className="lg:col-span-7 bg-[#FAF6EE] p-6 md:p-8 border border-[#E8E0D5]/60 shadow-sm">
+        <div className="lg:col-span-7 bg-[#352115] rounded-2xl p-6 md:p-8 border border-[#E8E0D5]/60 shadow-sm">
           {isSuccess ? (
             <div className="py-12 flex flex-col items-center text-center space-y-4" id="corporate-success">
               <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 rounded-full flex items-center justify-center">
                 <ClipboardCheck className="w-6 h-6" />
               </div>
-              <h3 className="text-xl font-serif text-[#352115] font-light">Demande d'estimation envoyée</h3>
+              <h3 className="text-xl font-serif text-[#FAF6EE] font-light">Demande d'estimation envoyée</h3>
               <p className="text-xs text-[#7E695D] font-sans font-light max-w-sm">
                 Votre programmation a été enregistrée avec succès. Notre chef de projet voyages va vous transmettre une proposition d'estimation chiffrée par courriel.
               </p>
             </div>
           ) : (
             <form onSubmit={handleEstimateSubmit} className="space-y-5 text-xs font-sans">
-              <h3 className="text-base font-semibold tracking-wider text-[#352115] border-b border-[#E8E0D5] pb-2 uppercase">
-                FORMULAIRE D'ESTIMATION GROUPE
+              <h3 className="text-base font-semibold tracking-wider text-[#FAF6EE] border-b border-[#E8E0D5] pb-2 uppercase">
+                FORMULAIRE D'IMMERSION SUR MESURE
               </h3>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -234,9 +250,9 @@ export default function CorporatePage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#352115] hover:bg-[#1C0F0A] text-white text-[11px] font-bold tracking-[0.25em] py-5 transition-colors duration-300 disabled:opacity-50 uppercase cursor-pointer"
+                className="w-full bg-[#FAF6EE] hover:bg-[#1C0F0A] text-[#352115] text-[11px] font-bold tracking-[0.25em] py-5 transition-colors duration-300 disabled:opacity-50 uppercase cursor-pointer"
               >
-                {isSubmitting ? "TRANSMISSION..." : "OBTENIR MON ESTIMATION GRATUITE"}
+                {isSubmitting ? "TRANSMISSION..." : "OBTENIR MON DEVIS"}
               </button>
             </form>
           )}

@@ -6,32 +6,32 @@ interface CatalogueProps {
 }
 
 export default function Catalogue({ onExploreCategory, onExploreAll }: CatalogueProps) {
-  const categories = [
-    {
-      index: "N1 - Signature",
-      title: "Ateliers",
-      description: "Mijoterie, Batik, Boiserie, Infuserie",
-      id: "ateliers"
-    },
-    {
-      index: "03",
-      title: "Journées",
-      description: "Abidjan, Grand-Bassam, Assinie",
-      id: "journees"
-    },
-    {
-      index: "04",
-      title: "Circuits",
-      description: "Akwaba, Yacouba, Kroumen, Sénoufo",
-      id: "circuits"
-    },
-    {
-      index: "03",
-      title: "Team building",
-      description: "Escape City, TrippinBBQ",
-      id: "team-building"
-    }
-  ];
+const categories = [
+  {
+    index: "N1 - Signature",
+    title: "Escape games & Chasses urbaines",
+    description: "Grand-Bassam · Abidjan · Assinie",
+    id: "eg-signature"
+  },
+  {
+    index: "N2 - Expériences ancrées",
+    title: "L'Escale de Mondoukou",
+    description: "Circuit immersif · Lagune Aby",
+    id: "escale-mondoukou"
+  },
+  {
+    index: "N2 - Expériences ancrées",
+    title: "Opération Éhotilé",
+    description: "4 étapes · Village Ebouando",
+    id: "operation-ehotile"
+  },
+  {
+    index: "N3 - Jeux culturels",
+    title: "Sikissa & 6K Collectif",
+    description: "Jeux de découverte · Format groupe",
+    id: "sikissa-6k"
+  }
+];
 
   return (
     <section className="bg-[#FAF6EE] py-20 px-6 md:px-12 w-full" id="catalogue-section">
@@ -60,8 +60,8 @@ export default function Catalogue({ onExploreCategory, onExploreAll }: Catalogue
         </div>
 
         {/* 4 Cards Grid - exactly styled layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-l border-[#E8E0D5] border-r border-[#E8E0D5]/30">
-          {categories.map((cat, i) => (
+<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {categories.map((cat, i) => (
             <motion.div
               key={cat.id}
               initial={{ opacity: 0, y: 20 }}
@@ -69,7 +69,7 @@ export default function Catalogue({ onExploreCategory, onExploreAll }: Catalogue
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.15 }}
               onClick={() => onExploreCategory(cat.id)}
-              className="flex flex-col justify-between p-8 md:p-10 border-r border-[#E8E0D5]/80 hover:bg-[#EFEAE0]/40 transition-all duration-300 cursor-pointer h-[320px] group relative overflow-hidden"
+className="flex flex-col justify-between p-8 md:p-10 border border-[#E8E0D5] rounded-3xl bg-[#FAF6EE] hover:bg-[#EFEAE0]/40 hover:shadow-xl transition-all duration-300 cursor-pointer min-h-[320px] group relative overflow-hidden"
               id={`category-card-${cat.id}`}
             >
               {/* Index counter top header */}
