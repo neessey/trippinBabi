@@ -708,8 +708,8 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
                         {bk.status}
                       </span>
                     </div>
-                    <div className="grid grid-cols-2 gap-2 text-[11px] text-[#7E695D]">
-                      <span>Email: <strong>{bk.clientEmail}</strong></span>
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-[#7E695D]">
+                        <span>Email: <strong>{bk.clientEmail}</strong></span>
                       <span>Téléphone: <strong>{bk.clientPhone || "Non renseigné"}</strong></span>
                       <span>Date souhaitée: <strong>{bk.bookingDate}</strong></span>
                       <span>Participants: <strong>{bk.paxCount} pers.</strong></span>

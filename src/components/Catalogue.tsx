@@ -68,7 +68,6 @@ const categories = [
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: i * 0.15 }}
-              onClick={() => onExploreCategory(cat.id)}
 className="flex flex-col justify-between p-8 md:p-10 border border-[#E8E0D5] rounded-3xl bg-[#FAF6EE] hover:bg-[#EFEAE0]/40 hover:shadow-xl transition-all duration-300 cursor-pointer min-h-[320px] group relative overflow-hidden"
               id={`category-card-${cat.id}`}
             >
@@ -90,13 +89,6 @@ className="flex flex-col justify-between p-8 md:p-10 border border-[#E8E0D5] rou
                 <p className="text-[#7E695D] font-sans text-xs md:text-sm leading-relaxed font-light">
                   {cat.description}
                 </p>
-              </div>
-
-              {/* Bottom persistent link arrow */}
-              <div className="pt-4 z-10">
-                <span className="text-[10px] font-sans font-bold tracking-[0.2em] text-[#352115]/50 group-hover:text-[#352115] group-hover:tracking-[0.25em] transition-all duration-300 uppercase">
-                  EXPLORER →
-                </span>
               </div>
 
               {/* Custom background color slide up item */}
