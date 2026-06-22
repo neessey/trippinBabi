@@ -17,6 +17,8 @@ import TripsPage from "./pages/trips/page";
 
 import { getMonthlyActivity, MonthlyActivity, DEFAULT_MONTHLY_ACTIVITY } from "./lib/firebase";
 
+
+
 interface SEOMetadata {
   title: string;
   description: string;
@@ -119,8 +121,6 @@ const getViewFromPathname = (path: string): string => {
       return "corporate";
     case "/contact":
       return "contact";
-    case "/admin":
-      return "admin";
     default:
       return "home";
   }
@@ -147,8 +147,13 @@ const getPathnameFromView = (view: string): string => {
 };
 
 export default function App() {
-  const [currentView, setCurrentView] = useState<string>(() => getViewFromPathname(window.location.pathname));
-  const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>("all");
+const [currentView, setCurrentView] = useState<string>(() => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("access") === (import.meta as any).env?.VITE_ADMIN_KEY) {
+    return "admin";
+  }
+  return getViewFromPathname(window.location.pathname);
+});  const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>("all");
   
   // Dynamic Activity of the Month state loadable from Firestore
   const [monthlyActivity, setMonthlyActivity] = useState<MonthlyActivity>(DEFAULT_MONTHLY_ACTIVITY);
@@ -173,20 +178,20 @@ export default function App() {
   }
 
   // Load Firestore Data on bootstrap and hear back-navigation
-  useEffect(() => {
-    loadMonthlyActivityData();
+ useEffect(() => {
+  loadMonthlyActivityData();
 
-    const handlePopState = () => {
-      setCurrentView(getViewFromPathname(window.location.pathname));
-    };
-     const params = new URLSearchParams(window.location.search);
-  if (params.get("access") === (import.meta as any).env.VITE_ADMIN_KEY) {
-    setCurrentView("admin");
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("access")) {
+    window.history.replaceState({}, "", window.location.pathname);
   }
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
-  }, 
-  []);
+
+  const handlePopState = () => {
+    setCurrentView(getViewFromPathname(window.location.pathname));
+  };
+  window.addEventListener("popstate", handlePopState);
+  return () => window.removeEventListener("popstate", handlePopState);
+}, []);
 
   // Smooth Navigation wrapper that scrolls to the top of the viewport and pushes history path
   function handleNavigate(viewId: string) {
