@@ -179,9 +179,14 @@ export default function App() {
     const handlePopState = () => {
       setCurrentView(getViewFromPathname(window.location.pathname));
     };
+     const params = new URLSearchParams(window.location.search);
+  if (params.get("access") === (import.meta as any).env.VITE_ADMIN_KEY) {
+    setCurrentView("admin");
+  }
     window.addEventListener("popstate", handlePopState);
     return () => window.removeEventListener("popstate", handlePopState);
-  }, []);
+  }, 
+  []);
 
   // Smooth Navigation wrapper that scrolls to the top of the viewport and pushes history path
   function handleNavigate(viewId: string) {
