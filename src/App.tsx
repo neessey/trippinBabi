@@ -3,16 +3,17 @@ import { motion, AnimatePresence } from "motion/react";
 import { Helmet } from "react-helmet-async";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
-import ActiviteDuMois from "./components/ActiviteDuMois";
+import ActiviteDuMois from "./pages/activite/page";
 import Catalogue from "./components/Catalogue";
 import CallToAction from "./components/CallToAction";
 import Footer from "./components/Footer";
-
+import BookingTrips from "./components/BookingTrips"; 
 import BookingModal from "./components/BookingModal";
-import ExperiencesPage from "./components/ExperiencesPage";
-import CorporatePage from "./components/CorporatePage";
-import ContactPage from "./components/ContactPage";
+import ExperiencesPage from "./pages/experiences/page";
+import CorporatePage from "./pages/corporate/page";
+import ContactPage from "./pages/contact/page";
 import AdminPanel from "./components/AdminPanel";
+import TripsPage from "./pages/trips/page"; 
 
 import { getMonthlyActivity, MonthlyActivity, DEFAULT_MONTHLY_ACTIVITY } from "./lib/firebase";
 
@@ -29,6 +30,16 @@ interface SEOMetadata {
 
 const getSEOMetadata = (view: string, monthlyAct: MonthlyActivity): SEOMetadata => {
   switch (view) {
+    case "trips": // 👈 Nouveau cas
+      return {
+        title: "Nos Voyages & Séjours Sur-Mesure | Trippin Babi",
+        description: "Découvrez nos voyages immersifs en Côte d'Ivoire. Séjours personnalisés, escapades culturelles et aventures authentiques conçus par des passionnés.",
+        keywords: "voyage Côte d'Ivoire, séjour sur mesure, immersion culturelle, vacances Abidjan, escapade Grand-Bassam, Assinie, voyage organisé",
+        ogTitle: "Voyages Sur-Mesure en Côte d'Ivoire",
+        ogDescription: "Vivez une expérience unique avec nos séjours immersifs et nos escapades culturelles d'exception.",
+        ogType: "website",
+        ogImage: "https://trippin-babi.com/cocoa_artisan_1781884316543.jpg"
+      };
     case "experiences":
       return {
         title: "Nos Expériences Immersives | Trippin Babi",
@@ -94,8 +105,49 @@ const getSEOMetadata = (view: string, monthlyAct: MonthlyActivity): SEOMetadata 
   }
 };
 
+// Helper to map pathname to view ID
+const getViewFromPathname = (path: string): string => {
+  switch (path) {
+    case "/voyage":
+    case "/trips":
+      return "trips";
+    case "/experiences":
+      return "experiences";
+    case "/activite":
+      return "activities";
+    case "/corporate":
+      return "corporate";
+    case "/contact":
+      return "contact";
+    case "/admin":
+      return "admin";
+    default:
+      return "home";
+  }
+};
+
+// Helper to map view ID to pathname
+const getPathnameFromView = (view: string): string => {
+  switch (view) {
+    case "trips":
+      return "/voyage";
+    case "experiences":
+      return "/experiences";
+    case "activities":
+      return "/activite";
+    case "corporate":
+      return "/corporate";
+    case "contact":
+      return "/contact";
+    case "admin":
+      return "/admin";
+    default:
+      return "/";
+  }
+};
+
 export default function App() {
-  const [currentView, setCurrentView] = useState<string>("home");
+  const [currentView, setCurrentView] = useState<string>(() => getViewFromPathname(window.location.pathname));
   const [activeCategoryFilter, setActiveCategoryFilter] = useState<string>("all");
   
   // Dynamic Activity of the Month state loadable from Firestore
@@ -105,6 +157,8 @@ export default function App() {
   // Booking Modal states
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedActivityForBooking, setSelectedActivityForBooking] = useState("");
+   const [isTripBookingOpen, setIsTripBookingOpen] = useState(false);
+  const [selectedTripForBooking, setSelectedTripForBooking] = useState("");
 
   // Load Firestore Data
   async function loadMonthlyActivityData() {
@@ -118,13 +172,23 @@ export default function App() {
     }
   }
 
-  // Load Firestore Data on bootstrap
+  // Load Firestore Data on bootstrap and hear back-navigation
   useEffect(() => {
     loadMonthlyActivityData();
+
+    const handlePopState = () => {
+      setCurrentView(getViewFromPathname(window.location.pathname));
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  // Smooth Navigation wrapper that scrolls to the top of the viewport
+  // Smooth Navigation wrapper that scrolls to the top of the viewport and pushes history path
   function handleNavigate(viewId: string) {
+    const targetPath = getPathnameFromView(viewId);
+    if (window.location.pathname !== targetPath) {
+      window.history.pushState({}, "", targetPath);
+    }
     setCurrentView(viewId);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
@@ -132,14 +196,23 @@ export default function App() {
   // Handle category navigation from homepage catalogue
   function handleExploreCategory(category: string) {
     setActiveCategoryFilter(category);
-    setCurrentView("experiences");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    handleNavigate("experiences");
   }
 
   // Open booking modal for specific item
   function triggerBooking(activityTitle: string) {
     setSelectedActivityForBooking(activityTitle);
     setIsBookingOpen(true);
+  }
+  
+  function handleBook(activityTitle: string) {
+    setSelectedActivityForBooking(activityTitle);
+    setIsBookingOpen(true);
+  }
+
+    function handleTripQuote(tripTitle: string) {
+    setSelectedTripForBooking(tripTitle);
+    setIsTripBookingOpen(true);
   }
 
   const seo = getSEOMetadata(currentView, monthlyActivity);
@@ -172,7 +245,6 @@ export default function App() {
 
       {/* Dynamic Header */}
       <Header currentView={currentView} onNavigate={handleNavigate} />
-
 
       {/* Primary Transition views container using Framer Motion */}
       <main className="flex-grow animate-[fadeIn_0.5s_ease-out]">
@@ -209,6 +281,20 @@ export default function App() {
             </motion.div>
           )}
 
+          {currentView === "trips" && (
+            <motion.div
+              key="trips-view"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              <TripsPage 
+                onQuoteRequest={handleTripQuote} 
+              />
+            </motion.div>
+          )}
+
           {currentView === "experiences" && (
             <motion.div
               key="experiences-view"
@@ -218,8 +304,9 @@ export default function App() {
               transition={{ duration: 0.3 }}
             >
               <ExperiencesPage 
-                onBook={triggerBooking} 
-                initialFilter={activeCategoryFilter} 
+                onBook={handleBook}
+                onNavigate={setCurrentView}
+                initialFilter={activeCategoryFilter}
               />
             </motion.div>
           )}
@@ -253,9 +340,9 @@ export default function App() {
                       Guidé par nos maîtres chocolatiers agréés locaux d'Abidjan, cet atelier participatif est un moment de symbiose parfaite entre savoir-faire traditionnel et raffinement premium.
                     </p>
                     {monthlyActivity.programmeComplet ? (
-                      <div className="bg-[#d5a63d] p-6 border border-[#352115] rounded-2xl mt-6 space-y-3 font-serif italic text-[#352115]">
+                      <div className="bg-[#EFEAE0] p-6 border border-[#E8E0D5] rounded-xs mt-6 space-y-3 font-serif italic text-[#352115]">
                         <h4 className="text-lg font-bold">Inclus dans la formule :</h4>
-                        <p className="whitespace-pre-line font-sans not-italic text-sm text-white">
+                        <p className="whitespace-pre-line font-sans not-italic text-sm text-[#7E695D]">
                           {monthlyActivity.programmeComplet}
                         </p>
                       </div>
@@ -321,6 +408,12 @@ export default function App() {
         isOpen={isBookingOpen} 
         onClose={() => setIsBookingOpen(false)} 
         defaultActivityTitle={selectedActivityForBooking} 
+      />
+
+      <BookingTrips 
+        isOpen={isTripBookingOpen} 
+        onClose={() => setIsTripBookingOpen(false)} 
+        defaultTripTitle={selectedTripForBooking} 
       />
 
     </div>

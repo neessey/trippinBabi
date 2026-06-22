@@ -4,10 +4,13 @@ import {
   updateMonthlyActivity, 
   getContactRequests, 
   getBookings, 
+  getTripBookings, 
   updateBookingStatus, 
+  updateTripBookingStatus, 
   MonthlyActivity, 
   ContactRequest, 
   Booking,
+  TripBooking,
   getEmailConfig,
   updateEmailConfig,
   EmailConfig,
@@ -17,7 +20,7 @@ import {
   SecurityConfig,
   DEFAULT_SECURITY_CONFIG
 } from "../lib/firebase";
-import { Lock, Save, RefreshCw, CheckCircle2, XCircle, Clock, Eye, ChevronDown, Check, FolderSync, Mail, Sparkles, Send, AlertCircle, ExternalLink, Shield, Key, LogOut, FileText, AlertTriangle, Database } from "lucide-react";
+import { Lock, Save, RefreshCw, CheckCircle2, XCircle, Clock, Eye, ChevronDown, Check, MapPin, Mail, Sparkles, Send, AlertCircle, ExternalLink, Shield, Key, LogOut, FileText, AlertTriangle, Database } from "lucide-react";
 import emailjs from "@emailjs/browser";
 
 const compressImage = (base64Str: string, maxWidth = 1000, maxHeight = 1000, quality = 0.75): Promise<string> => {
@@ -53,7 +56,7 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
   const [passphrase, setPassphrase] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [activeTab, setActiveTab] = useState<"activity" | "email" | "security">("activity");
+const [activeTab, setActiveTab] = useState<"activity" | "email" | "security" | "trips">("activity");
 
   const [title, setTitle] = useState("");
   const [italicTitle, setItalicTitle] = useState("");
@@ -106,7 +109,8 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
 
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [messages, setMessages] = useState<ContactRequest[]>([]);
-  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [tripBookings, setTripBookings] = useState<TripBooking[]>([]);
+    const [isRefreshing, setIsRefreshing] = useState(false);
   const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
   const [emailConfig, setEmailConfig] = useState<EmailConfig>(DEFAULT_EMAIL_CONFIG);
@@ -118,6 +122,12 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [emailSendSuccess, setEmailSendSuccess] = useState(false);
   const [emailSendError, setEmailSendError] = useState<string | null>(null);
+
+ const [selectedTripForEmail, setSelectedTripForEmail] = useState<TripBooking | null>(null);
+  const [customTripEmailMessage, setCustomTripEmailMessage] = useState("");
+  const [isSendingTripEmail, setIsSendingTripEmail] = useState(false);
+  const [tripEmailSendSuccess, setTripEmailSendSuccess] = useState(false);
+  const [tripEmailSendError, setTripEmailSendError] = useState<string | null>(null);
 
   const [securityConfig, setSecurityConfig] = useState<SecurityConfig>(DEFAULT_SECURITY_CONFIG);
   const [securityConfigSaveStatus, setSecurityConfigSaveStatus] = useState<string | null>(null);
@@ -197,6 +207,8 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
       if (config) setEmailConfig(config);
       const bk = await getBookings();
       setBookings(bk);
+      const trips = await getTripBookings();
+    setTripBookings(trips);
       const msg = await getContactRequests();
       setMessages(msg);
     } catch (err) {
@@ -314,7 +326,25 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
       addAuditEntry(`Réservation ${bookingId} changée en statut: ${status}`, "info");
     } catch (err) { console.error(err); }
   }
-
+ async function sendTripConfirmationEmail(trip: TripBooking, customMsg: string) {
+    if (!emailConfig.serviceId || !emailConfig.templateId || !emailConfig.publicKey) {
+      throw new Error("Les paramètres de notification EmailJS ne sont pas encore configurés dans l'onglet de gauche.");
+    }
+    const templateParams = {
+      to_name: trip.clientName,
+      to_email: trip.clientEmail,
+      trip_title: trip.tripTitle,
+      departure_date: trip.departureDate,
+      return_date: trip.returnDate || "Non spécifiée",
+      pax_count: trip.paxCount,
+      accommodation: trip.accommodationType,
+      budget: trip.budgetRange,
+      notes: trip.notes || "Aucune note particulière",
+      custom_message: customMsg || "Votre demande de voyage a bien été confirmée. Nous vous préparons un séjour sur mesure !",
+      sender_name: emailConfig.senderName || "Trippin Babi",
+    };
+    return emailjs.send(emailConfig.serviceId, emailConfig.templateId, templateParams, emailConfig.publicKey);
+  }
   // Send confirmation email via EmailJS (no devis, just booking info + custom message)
   async function sendConfirmationEmail(booking: Booking, customMsg: string) {
     if (!emailConfig.serviceId || !emailConfig.templateId || !emailConfig.publicKey) {
@@ -403,6 +433,77 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
       setSelectedBookingForEmail(null);
     } catch (err) { console.error(err); }
   }
+async function handleConfirmTripAndSendEmailJS() {
+    if (!selectedTripForEmail) return;
+    if (securityConfig.isSystemReadOnly) {
+      setTripEmailSendError("Le système est actuellement en MODE LECTURE SEULE. Envoi impossible.");
+      addAuditEntry("Échec de l'envoi email voyage : Le système est configuré en mode LECTURE SEULE.", "warning"); return;
+    }
+    setIsSendingTripEmail(true); setTripEmailSendError(null); setTripEmailSendSuccess(false);
+    try {
+      await sendTripConfirmationEmail(selectedTripForEmail, customTripEmailMessage);
+      await updateTripBookingStatus(selectedTripForEmail.id!, "confirmed");
+      setTripBookings(prev => prev.map(t => t.id === selectedTripForEmail.id ? { ...t, status: "confirmed" } : t));
+      addAuditEntry(`Confirmation voyage envoyée par mail à ${selectedTripForEmail.clientEmail}`, "success");
+      setTripEmailSendSuccess(true);
+      setTimeout(() => setSelectedTripForEmail(null), 2000);
+    } catch (err: any) {
+      console.error(err);
+      setTripEmailSendError(err instanceof Error ? err.message : String(err));
+    } finally { setIsSendingTripEmail(false); }
+  }
+
+  // 👈 NOUVEAU: Action: Confirm trip + open mailto
+  async function handleConfirmTripAndOpenMailto() {
+    if (!selectedTripForEmail) return;
+    if (securityConfig.isSystemReadOnly) {
+      alert("Mode Lecture Seule activé : Impossible de modifier la base de données.");
+      addAuditEntry("Tentative de lancement d'email voyage bloquée (Lecture Seule)", "warning"); return;
+    }
+    try {
+      await updateTripBookingStatus(selectedTripForEmail.id!, "confirmed");
+      setTripBookings(prev => prev.map(t => t.id === selectedTripForEmail.id ? { ...t, status: "confirmed" } : t));
+      addAuditEntry(`Voyage pour ${selectedTripForEmail.clientName} confirmé (Mailto ouvert)`, "success");
+
+      const emailSubject = `[Trippin Babi] Confirmation de votre voyage – ${selectedTripForEmail.tripTitle}`;
+      const customIntro = customTripEmailMessage ? `${customTripEmailMessage}\n\n` : "";
+      const emailBody =
+        `Bonjour ${selectedTripForEmail.clientName},\n\n` +
+        `Nous avons le plaisir de confirmer votre demande de voyage sur mesure.\n\n` +
+        `----------------------------------------\n` +
+        `Voyage : ${selectedTripForEmail.tripTitle}\n` +
+        `Date de départ : ${selectedTripForEmail.departureDate}\n` +
+        `Date de retour : ${selectedTripForEmail.returnDate || "Non spécifiée"}\n` +
+        `Participants : ${selectedTripForEmail.paxCount} pers.\n` +
+        `Hébergement : ${selectedTripForEmail.accommodationType}\n` +
+        `Budget : ${selectedTripForEmail.budgetRange}\n` +
+        (selectedTripForEmail.notes ? `Notes : ${selectedTripForEmail.notes}\n` : "") +
+        `----------------------------------------\n\n` +
+        `${customIntro}` +
+        `Nous restons à votre disposition pour toute question.\n\n` +
+        `À très bientôt,\n` +
+        `L'équipe de ${emailConfig.senderName || "Trippin Babi"}\n` +
+        `hello@trippinbabi.com | https://trippin-babi.com`;
+
+      window.location.href = `mailto:${selectedTripForEmail.clientEmail}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+      setSelectedTripForEmail(null);
+    } catch (err) { console.error(err); }
+  }
+
+  // 👈 NOUVEAU: Action: Confirm trip without email
+  async function handleConfirmTripWithoutEmail() {
+    if (!selectedTripForEmail) return;
+    if (securityConfig.isSystemReadOnly) {
+      alert("Mode Lecture Seule activé : Impossible de modifier la base de données.");
+      addAuditEntry("Action sans email voyage bloquée (Système en mode Lecture Seule)", "warning"); return;
+    }
+    try {
+      await updateTripBookingStatus(selectedTripForEmail.id!, "confirmed");
+      setTripBookings(prev => prev.map(t => t.id === selectedTripForEmail.id ? { ...t, status: "confirmed" } : t));
+      addAuditEntry(`Voyage pour ${selectedTripForEmail.clientName} validé directement hors-ligne`, "success");
+      setSelectedTripForEmail(null);
+    } catch (err) { console.error(err); }
+  }
 
   if (!isAuthenticated) {
     return (
@@ -474,7 +575,6 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
       </div>
     );
   }
-
   return (
     <div className="bg-[#FAF6EE] min-h-screen py-16 px-6 md:px-12 max-w-7xl mx-auto space-y-16" id="admin-panel-view">
       
@@ -508,13 +608,14 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
         
         <div className="lg:col-span-6 space-y-6">
           <div className="flex border border-[#E8E0D5] bg-[#EFEAE0] p-1 gap-1">
-            {(["activity", "email", "security"] as const).map((tab) => (
-              <button key={tab} onClick={() => setActiveTab(tab)}
-                className={`flex-1 py-3 text-[11px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer flex items-center justify-center space-x-1.5 ${activeTab === tab ? "bg-[#352115] text-[#FAF6EE]" : "text-[#7E695D] hover:text-[#352115]"}`}>
-                {tab === "activity" && <span>🗓️ Activité</span>}
-                {tab === "email" && <><Mail className="w-3.5 h-3.5" /><span>Emails</span></>}
-                {tab === "security" && <><Shield className="w-3.5 h-3.5" /><span>Sécurité</span></>}
-              </button>
+           {(["activity", "email", "security", "trips"] as const).map((tab) => (
+  <button key={tab} onClick={() => setActiveTab(tab)}
+    className={`flex-1 py-3 text-[11px] font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer flex items-center justify-center space-x-1.5 ${activeTab === tab ? "bg-[#352115] text-[#FAF6EE]" : "text-[#7E695D] hover:text-[#352115]"}`}>
+    {tab === "activity" && <span>🗓️ Activité</span>}
+    {tab === "email" && <><Mail className="w-3.5 h-3.5" /><span>Emails</span></>}
+    {tab === "security" && <><Shield className="w-3.5 h-3.5" /><span>Sécurité</span></>}
+    {tab === "trips" && <><MapPin className="w-3.5 h-3.5" /><span>Voyages</span></>} 
+  </button>
             ))}
           </div>
 
@@ -597,6 +698,84 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
               </form>
             </div>
           )}
+    {activeTab === "trips" && (
+            <div className="bg-[#EFEAE0] p-6 md:p-8 border border-[#E8E0D5] rounded-xs text-left animate-[fadeIn_0.2s_ease-out] space-y-6">
+              <div className="space-y-1 border-b border-[#E8E0D5] pb-3">
+                <h2 className="text-2xl font-serif text-[#352115] font-light flex items-center gap-2">
+                  <MapPin className="w-5 h-5 text-[#9A6F4C]" />
+                  <span>Demandes de Voyages ({tripBookings.length})</span>
+                </h2>
+                <p className="text-xs text-[#7E695D] font-sans">Gérez les demandes de devis voyages reçues via le formulaire BookingTrips.</p>
+              </div>
+              
+              {tripBookings.length === 0 ? (
+                <p className="text-xs text-[#7E695D] font-sans py-6">Aucune demande de voyage en cours.</p>
+              ) : (
+                <div className="space-y-4 max-h-[500px] overflow-y-auto" id="trips-admin-scroller">
+                  {tripBookings.map((tb) => (
+                    <div key={tb.id} className="p-4 bg-[#FAF6EE] border border-[#E8E0D5] space-y-3 text-xs">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-serif text-sm text-[#352115] font-bold">{tb.clientName}</h4>
+                          <span className="text-[#9A6F4C] font-semibold">{tb.tripTitle}</span>
+                        </div>
+                        <span className={`px-2 py-1 uppercase text-[9px] font-bold tracking-widest ${tb.status === "confirmed" ? "bg-emerald-500/10 text-emerald-800 border border-emerald-500/30" : tb.status === "cancelled" ? "bg-rose-500/10 text-rose-800 border border-rose-500/20" : "bg-amber-500/10 text-amber-800 border border-amber-500/20"}`}>
+                          {tb.status}
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-[#7E695D]">
+                        <span>Email: <strong>{tb.clientEmail}</strong></span>
+                        <span>Téléphone: <strong>{tb.clientPhone}</strong></span>
+                        <span>Départ: <strong>{tb.departureDate}</strong></span>
+                        <span>Retour: <strong>{tb.returnDate || "Non spécifié"}</strong></span>
+                        <span>Participants: <strong>{tb.paxCount} pers.</strong></span>
+                        <span>Hébergement: <strong>{tb.accommodationType}</strong></span>
+                        <span>Budget: <strong>{tb.budgetRange}</strong></span>
+                      </div>
+                      
+                      {tb.notes && (
+                        <p className="bg-[#EFEAE0] p-2 border border-[#E8E0D5]/50 leading-relaxed text-[#7E695D] text-[11px]">
+                          Note: "{tb.notes}"
+                        </p>
+                      )}
+                      
+                      <div className="flex space-x-2 pt-1 justify-end flex-wrap gap-2">
+                        {tb.status !== "confirmed" && (
+                          <button
+                            onClick={() => {
+                              setSelectedTripForEmail(tb);
+                              setCustomTripEmailMessage("");
+                              setTripEmailSendSuccess(false);
+                              setTripEmailSendError(null);
+                            }}
+                            className="px-2.5 py-1.5 bg-[#9A6F4C] text-white rounded-xs hover:bg-[#7E695D] transition-colors uppercase text-[9px] font-bold tracking-widest cursor-pointer flex items-center gap-1.5 shadow-sm"
+                          >
+                            <CheckCircle2 className="w-3.5 h-3.5" /><span>Confirmer & Notifier</span>
+                          </button>
+                        )}
+                        {tb.status !== "cancelled" && (
+                          <button
+                            onClick={async () => {
+                              if (window.confirm(`Refuser la demande de voyage pour ${tb.clientName} ?`)) {
+                                await updateTripBookingStatus(tb.id!, "cancelled");
+                                await loadData();
+                                addAuditEntry(`Voyage refusé pour ${tb.clientName}`, "warning");
+                              }
+                            }}
+                            className="px-2.5 py-1.5 bg-[#352115] text-white rounded-xs hover:bg-neutral-900 transition-colors uppercase text-[9px] font-bold tracking-widest cursor-pointer"
+                          >
+                            Refuser
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
 
           {activeTab === "email" && (
             <div className="bg-[#EFEAE0] p-6 md:p-8 border border-[#E8E0D5] rounded-xs text-left animate-[fadeIn_0.2s_ease-out] space-y-6">
@@ -831,6 +1010,83 @@ export default function AdminPanel({ onActivityUpdated }: AdminPanelProps) {
                   <ExternalLink className="w-3.5 h-3.5" /><span>OUVRIR MAILTO</span>
                 </button>
                 <button onClick={handleConfirmWithoutEmail} disabled={isSendingEmail || emailSendSuccess}
+                  className="px-3 py-2.5 bg-neutral-200 hover:bg-neutral-300 text-[#352115] text-[9px] font-bold tracking-widest uppercase transition-all cursor-pointer flex items-center justify-center disabled:opacity-50">
+                  SANS NOTIFICATION
+                </button>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      )}
+  {selectedTripForEmail && (
+        <div className="fixed inset-0 bg-[#352115]/80 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-[fadeIn_0.15s_ease-out]">
+          <div className="bg-[#FAF6EE] border-2 border-[#E8DCC4] w-full max-w-lg shadow-2xl relative text-left rounded-xs">
+            
+            <div className="flex justify-between items-center bg-[#352115] text-[#FAF6EE] px-6 py-3">
+              <div className="flex items-center space-x-3">
+                <Send className="w-4 h-4 text-[#E2A63B]" />
+                <div>
+                  <h3 className="text-sm font-sans font-bold tracking-widest uppercase">CONFIRMER LE VOYAGE</h3>
+                  <p className="text-[10px] text-[#E8DCC4]/80">{selectedTripForEmail.clientName} — {selectedTripForEmail.tripTitle}</p>
+                </div>
+              </div>
+              <button onClick={() => setSelectedTripForEmail(null)} className="text-white/70 hover:text-white font-bold cursor-pointer px-2 py-1 bg-white/10 hover:bg-white/20 transition-all">✕</button>
+            </div>
+
+            <div className="p-6 space-y-5">
+              {/* Trip summary */}
+              <div className="bg-[#EFEAE0] border border-[#E8DCC4] p-4 text-xs space-y-1.5 font-sans">
+                <p><span className="text-[#9A6F4C] font-bold uppercase tracking-wider text-[10px]">Client</span><br /><strong>{selectedTripForEmail.clientName}</strong> — {selectedTripForEmail.clientEmail}</p>
+                <p><span className="text-[#9A6F4C] font-bold uppercase tracking-wider text-[10px]">Voyage</span><br /><strong>{selectedTripForEmail.tripTitle}</strong></p>
+                <p><span className="text-[#9A6F4C] font-bold uppercase tracking-wider text-[10px]">Dates & Participants</span><br />
+                  <strong>Départ :</strong> {selectedTripForEmail.departureDate} — 
+                  <strong> Retour :</strong> {selectedTripForEmail.returnDate || "Non spécifié"} — 
+                  <strong> {selectedTripForEmail.paxCount} pers.</strong>
+                </p>
+                <p><span className="text-[#9A6F4C] font-bold uppercase tracking-wider text-[10px]">Hébergement & Budget</span><br />
+                  <strong>{selectedTripForEmail.accommodationType}</strong> — <strong>{selectedTripForEmail.budgetRange}</strong>
+                </p>
+                {selectedTripForEmail.notes && <p><span className="text-[#9A6F4C] font-bold uppercase tracking-wider text-[10px]">Notes</span><br />{selectedTripForEmail.notes}</p>}
+              </div>
+
+              {/* Custom note */}
+              <div className="space-y-1.5 text-xs font-sans">
+                <label className="block font-bold text-[#352115] uppercase tracking-wider text-[10px]">NOTE COMPLÉMENTAIRE (optionnel)</label>
+                <textarea
+                  rows={3}
+                  value={customTripEmailMessage}
+                  onChange={(e) => setCustomTripEmailMessage(e.target.value)}
+                  placeholder="Informations supplémentaires, recommandations..."
+                  className="w-full p-3 bg-white border border-[#E8DCC4] text-[#352115] text-xs resize-none focus:outline-none focus:border-[#9A6F4C]"
+                />
+              </div>
+
+              {/* Feedback */}
+              {tripEmailSendSuccess && (
+                <div className="p-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-800 text-xs font-sans flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 animate-bounce" />
+                  <span>Email de confirmation envoyé avec succès !</span>
+                </div>
+              )}
+              {tripEmailSendError && (
+                <div className="p-3 bg-rose-500/10 border border-rose-500/30 text-rose-800 text-[11px] font-sans space-y-1">
+                  <p className="font-bold flex items-center gap-1"><AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />Erreur EmailJS</p>
+                  <p className="opacity-90">{tripEmailSendError}</p>
+                </div>
+              )}
+
+              {/* Actions */}
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <button onClick={handleConfirmTripAndSendEmailJS} disabled={isSendingTripEmail || tripEmailSendSuccess}
+                  className="px-3 py-3 bg-emerald-700 hover:bg-emerald-800 text-white text-[10px] font-bold tracking-widest uppercase transition-all cursor-pointer flex items-center justify-center space-x-1.5 disabled:opacity-50 col-span-2">
+                  {isSendingTripEmail ? <><RefreshCw className="w-3.5 h-3.5 animate-spin" /><span>ENVOI...</span></> : <><Send className="w-3.5 h-3.5" /><span>ENVOYER PAR EMAILJS</span></>}
+                </button>
+                <button onClick={handleConfirmTripAndOpenMailto} disabled={isSendingTripEmail || tripEmailSendSuccess}
+                  className="px-3 py-2.5 bg-[#FAF6EE] border border-[#9A6F4C] text-[#9A6F4C] hover:bg-[#9A6F4C]/5 text-[10px] font-bold tracking-widest uppercase transition-all cursor-pointer flex items-center justify-center space-x-1 disabled:opacity-50">
+                  <ExternalLink className="w-3.5 h-3.5" /><span>OUVRIR MAILTO</span>
+                </button>
+                <button onClick={handleConfirmTripWithoutEmail} disabled={isSendingTripEmail || tripEmailSendSuccess}
                   className="px-3 py-2.5 bg-neutral-200 hover:bg-neutral-300 text-[#352115] text-[9px] font-bold tracking-widest uppercase transition-all cursor-pointer flex items-center justify-center disabled:opacity-50">
                   SANS NOTIFICATION
                 </button>

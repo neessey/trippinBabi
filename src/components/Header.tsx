@@ -11,9 +11,10 @@ export default function Header({ currentView, onNavigate }: HeaderProps) {
 
   const links = [
     { label: "EXPÉRIENCES", id: "experiences" },
-    { label: "ACTIVITÉS", id: "activities" },
+    { label: "VOYAGE PRIVE", id: "trips" },
     { label: "CORPORATE", id: "corporate" },
     { label: "CONTACT", id: "contact" },
+
   ];
 
   return (
@@ -49,28 +50,11 @@ export default function Header({ currentView, onNavigate }: HeaderProps) {
               )}
             </button>
           ))}
-          
-          <button
-            onClick={() => onNavigate("admin")}
-            className={`p-1.5 rounded-full hover:bg-[#E8E0D5]/40 transition-colors ${
-              currentView === "admin" ? "text-[#9A6F4C]" : "text-[#352115]/70 hover:text-[#352115]"
-            }`}
-            title="Console Admin"
-            id="admin-btn"
-          >
-            <Settings className="w-4.5 h-4.5" />
-          </button>
         </nav>
+        
 
         {/* Mobile menu button */}
         <div className="flex items-center space-x-4 md:hidden">
-          <button
-            onClick={() => onNavigate("admin")}
-            className="p-1.5 text-[#352115]/80 hover:text-[#9A6F4C] transition-colors"
-            title="Console Admin"
-          >
-            <Settings className="w-5 h-5" />
-          </button>
           <button
             onClick={() => setIsOpen(!isOpen)}
             className="text-[#352115] focus:outline-none p-1"

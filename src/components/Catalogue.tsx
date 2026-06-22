@@ -60,40 +60,42 @@ const categories = [
         </div>
 
         {/* 4 Cards Grid - exactly styled layout */}
-<div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {categories.map((cat, i) => (
-            <motion.div
-              key={cat.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: i * 0.15 }}
-className="flex flex-col justify-between p-8 md:p-10 border border-[#E8E0D5] rounded-3xl bg-[#FAF6EE] hover:bg-[#EFEAE0]/40 hover:shadow-xl transition-all duration-300 cursor-pointer min-h-[320px] group relative overflow-hidden"
-              id={`category-card-${cat.id}`}
-            >
-              {/* Index counter top header */}
-              <div className="flex justify-between items-center z-10">
-                <span className="text-[11px] font-sans font-bold text-[#9A6F4C] tracking-[0.15em]">
-                  {cat.index}
-                </span>
-                
-                {/* Visual hover graphic indicator */}
-                <span className="w-1.5 h-1.5 rounded-full bg-[#9A6F4C] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
+          <motion.div
+  key={cat.id}
+  initial={{ opacity: 0, y: 20 }}
+  whileInView={{ opacity: 1, y: 0 }}
+  viewport={{ once: true }}
+  transition={{ duration: 0.5, delay: i * 0.1 }}
+  onClick={() => onExploreCategory(cat.id)}
+  className="
+    group cursor-pointer
+    border border-[#E8E0D5]
+    rounded-2xl
+    bg-[#FAF6EE]
+    p-5
+    hover:bg-[#F2ECE2]
+    hover:shadow-lg
+    transition-all duration-300
+  "
+>
+  <div className="flex items-center justify-between mb-4">
+    <span className="text-[10px] font-bold tracking-[0.18em] uppercase text-[#9A6F4C]">
+      {cat.index}
+    </span>
 
-              {/* Main Typography content */}
-              <div className="space-y-3 z-10">
-                <h3 className="text-2xl md:text-3xl font-serif text-[#352115] group-hover:text-[#9A6F4C] transition-colors duration-300 font-light">
-                  {cat.title}
-                </h3>
-                <p className="text-[#7E695D] font-sans text-xs md:text-sm leading-relaxed font-light">
-                  {cat.description}
-                </p>
-              </div>
+    <span className="w-1.5 h-1.5 rounded-full bg-[#9A6F4C] opacity-0 group-hover:opacity-100 transition" />
+  </div>
 
-              {/* Custom background color slide up item */}
-              <div className="absolute inset-x-0 bottom-0 h-1 bg-[#9A6F4C]/10 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-            </motion.div>
+  <h3 className="text-xl md:text-2xl font-serif font-light text-[#352115] leading-tight group-hover:text-[#9A6F4C] transition-colors">
+    {cat.title}
+  </h3>
+
+  <p className="mt-2 text-xs md:text-sm text-[#7E695D] leading-relaxed">
+    {cat.description}
+  </p>
+</motion.div>
           ))}
         </div>
 

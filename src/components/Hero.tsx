@@ -22,14 +22,14 @@ export default function Hero({ onDiscover, onCorporate }: HeroProps) {
           {/* Small tracked out label */}
           <div className="space-y-1">
             <span className="text-[10px] md:text-xs font-sans font-semibold tracking-[0.25em] text-[#9A6F4C] block uppercase">
-              CREATING MEMORIES · ABIDJAN
+              CREATING MEMORIES 
             </span>
           </div>
 
           {/* Premium Editorial Title */}
           <h1 className="text-4xl md:text-5xl lg:text-[5.4rem] font-serif leading-[1.05] tracking-tight text-[#352115] max-w-2xl font-light">
-            Vivez la CI <br /><span className="font-serif italic text-[#9A6F4C] font-normal">comme jamais</span><br />
-            vous ne l'avez vue.
+            La Côte d'Ivoire, <br /><span className="font-serif italic text-[#9A6F4C] font-normal">notre terrain</span><br />
+            de jeu.
           </h1>
 
           {/* Paragraph copy */}

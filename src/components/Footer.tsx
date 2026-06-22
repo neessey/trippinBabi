@@ -7,121 +7,158 @@ export default function Footer({ onNavigate, onExploreCategory }: FooterProps) {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-[#140A06] text-[#FAF6EE]/80 py-16 px-6 md:px-12 w-full border-t border-[#352115]" id="app-footer">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-8 pb-12 border-b border-[#FAF6EE]/10">
-        
-        {/* Left Column Brand Block */}
-        <div className="md:col-span-4 space-y-4">
-          <div 
-            onClick={() => onNavigate("home")} 
-            className="cursor-pointer group flex flex-col w-fit"
-            id="footer-logo"
-          >
-            <span className="font-display font-black tracking-[0.25em] text-xl text-[#FAF6EE] group-hover:text-[#9A6F4C] transition-colors duration-300">
-              TRIPPIN BABI
-            </span>
-            <span className="text-[8px] tracking-[0.2em] text-[#9A6F4C] font-semibold uppercase mt-0.5">
-              EST. ABIDJAN
-            </span>
+    <footer className="bg-[#140A06] text-[#FAF6EE]/80 border-t border-[#352115]">
+      <div className="max-w-7xl mx-auto px-6 md:px-12 py-20">
+
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-14 pb-16 border-b border-[#FAF6EE]/10">
+
+          {/* Brand */}
+<div className="md:col-span-4  md:-mt-10">
+              <div
+              onClick={() => onNavigate("home")}
+              className="cursor-pointer w-fit group "
+            >
+              <img
+    src="/assets/logo1.png"
+    alt="TRIPPIN BABI"
+    className="h-32 md:h-40 w-auto object-contain"
+  />
+            </div>
+
+            <p className="text-sm leading-relaxed text-[#FAF6EE]/50 max-w-sm">
+              La Côte d'Ivoire regorge de traditions, de savoir-faire et
+              d'histoires à transmettre. Nos expériences sont pensées pour
+              révéler toute la richesse du patrimoine ivoirien.
+            </p>
           </div>
-          
-          <p className="text-[#FAF6EE]/50 font-serif italic text-sm md:text-base font-light max-w-xs">
-            La Côte d'Ivoire comme terrain de jeu.
-          </p>
-        </div>
 
-        {/* Column 2: Experiences link navigation list */}
-        <div className="md:col-span-4 space-y-4">
-          <h4 className="text-[10px] font-sans font-bold tracking-[0.25em] text-[#9A6F4C] uppercase">
-            EXPÉRIENCES
-          </h4>
-          <ul className="space-y-3 text-xs md:text-sm font-sans tracking-[0.05em] font-light">
-            <li>
-              <button 
-                onClick={() => { onNavigate("experiences"); if (onExploreCategory) onExploreCategory("all"); }}
-                className="hover:text-white hover:underline transition-colors cursor-pointer text-left"
-              >
-                Séjours en Côte d'Ivoire
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => { onNavigate("experiences"); if (onExploreCategory) onExploreCategory("team-building"); }}
-                className="hover:text-white hover:underline transition-colors cursor-pointer text-left"
-              >
-                Escape games
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => { onNavigate("experiences"); if (onExploreCategory) onExploreCategory("ateliers"); }}
-                className="hover:text-white hover:underline transition-colors cursor-pointer text-left"
-              >
-                Ateliers culturels
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => onNavigate("activities")}
-                className="hover:text-white hover:underline transition-colors cursor-pointer text-left"
-              >
-                Activité du mois
-              </button>
-            </li>
-          </ul>
-        </div>
+          {/* Explorer */}
+          <div className="md:col-span-3 space-y-5">
+            <h4 className="text-[11px] tracking-[0.25em] text-[#9A6F4C] font-bold uppercase">
+              Explorer
+            </h4>
 
-        {/* Column 3: Corporate and Groups list */}
-        <div className="md:col-span-4 space-y-4">
-          <h4 className="text-[10px] font-sans font-bold tracking-[0.25em] text-[#9A6F4C] uppercase">
-            GROUPES & ENTREPRISES
-          </h4>
-          <ul className="space-y-3 text-xs md:text-sm font-sans tracking-[0.05em] font-light">
-            <li>
-              <button 
-                onClick={() => onNavigate("corporate")}
-                className="hover:text-white hover:underline transition-colors cursor-pointer text-left"
+            <ul className="space-y-4 text-sm">
+              <li>
+                <button
+                  onClick={() => {
+                    onNavigate("experiences");
+                    onExploreCategory?.("all");
+                  }}
+                  className="hover:text-white transition"
+                >
+                  Toutes les expériences
+                </button>
+              </li>
+
+              <li>
+                <button
+                  onClick={() => {
+                    onNavigate("experiences");
+                    onExploreCategory?.("ateliers");
+                  }}
+                  className="hover:text-white transition"
+                >
+                  Ateliers immersifs
+                </button>
+              </li>
+
+              <li>
+                <button
+                  onClick={() => {
+                    onNavigate("experiences");
+                    onExploreCategory?.("jeux-culturels");
+                  }}
+                  className="hover:text-white transition"
+                >
+                  Jeux culturels
+                </button>
+              </li>
+
+              <li>
+                <button
+                  onClick={() => onNavigate("activities")}
+                  className="hover:text-white transition"
+                >
+                  Activité du mois
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Entreprises */}
+          <div className="md:col-span-3 space-y-5">
+            <h4 className="text-[11px] tracking-[0.25em] text-[#9A6F4C] font-bold uppercase">
+              Groupes & Entreprises
+            </h4>
+
+            <ul className="space-y-4 text-sm">
+              <li>
+                <button
+                  onClick={() => onNavigate("corporate")}
+                  className="hover:text-white transition"
+                >
+                  Team Building
+                </button>
+              </li>
+
+              <li>
+                <button
+                  onClick={() => onNavigate("corporate")}
+                  className="hover:text-white transition"
+                >
+                  Expériences sur mesure
+                </button>
+              </li>
+
+              <li>
+                <button
+                  onClick={() => onNavigate("corporate")}
+                  className="hover:text-white transition"
+                >
+                  Activations de marque
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Contact */}
+          <div className="md:col-span-2 space-y-5">
+            <h4 className="text-[11px] tracking-[0.25em] text-[#9A6F4C] font-bold uppercase">
+              Contact
+            </h4>
+
+            <div className="space-y-4 text-sm text-[#FAF6EE]/60">
+              <p>Abidjan, Côte d'Ivoire</p>
+
+              <a
+                href="mailto:hello@trippinbabi.com"
+                className="block hover:text-white transition"
               >
-                Activations team building
-              </button>
-            </li>
-            <li>
-              <button 
-                onClick={() => onNavigate("corporate")}
-                className="hover:text-white hover:underline transition-colors cursor-pointer text-left"
-              >
-                Expériences sur-mesure
-              </button>
-            </li>
-            
-            <li>
-              <button 
+                hello@trippinbabi.com
+              </a>
+
+              <button
                 onClick={() => onNavigate("contact")}
-                className="hover:text-white hover:underline transition-colors cursor-pointer text-left"
+                className="hover:text-white transition"
               >
                 Nous contacter
               </button>
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
 
-      </div>
+        {/* Bottom */}
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-[11px] tracking-[0.18em] text-[#FAF6EE]/40">
 
-      {/* Row footer bar meta details */}
-      <div className="max-w-7xl mx-auto pt-8 flex flex-col md:flex-row items-center justify-between text-[11px] font-sans tracking-widest text-[#FAF6EE]/40 font-light space-y-4 md:space-y-0">
-        <div>
-          <span>© {currentYear} TRIPPIN BABI. TOUS DROITS RÉSERVÉS.</span>
-        </div>
-        
-        <div className="flex items-center space-x-6">
-          <button 
-            onClick={() => onNavigate("admin")}
-            className="hover:text-[#9A6F4C] underline transition-colors cursor-pointer text-[10px] tracking-[0.15em] font-semibold"
-          >
-            CONSOLE ADMIN
-          </button>
-          <span>·</span>
-          <span>MADE IN ABIDJAN</span>
+          <span>
+            © {currentYear} TRIPPIN BABI — TOUS DROITS RÉSERVÉS
+          </span>
+
+          <div className="flex items-center gap-6 uppercase">
+            <span>Made in Abidjan</span>
+          </div>
+
         </div>
       </div>
     </footer>

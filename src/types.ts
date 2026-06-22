@@ -45,3 +45,15 @@ export interface BookingRequest {
   createdAt: number;
   status: "pending" | "confirmed" | "cancelled";
 }
+export interface BookingTripsRequest {
+  id?: string;
+  tripTitle: string;
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string;
+  bookingDate: string;
+  paxCount: number;
+  notes?: string;
+  createdAt: number;
+  status: "pending" | "confirmed" | "cancelled";
+}

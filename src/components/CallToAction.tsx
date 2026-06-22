@@ -19,7 +19,7 @@ export default function CallToAction({ onPlanTrip, onGroupQuote }: CallToActionP
           className="space-y-1"
         >
           <h2 className="text-3xl md:text-5xl lg:text-[4.2rem] font-serif leading-[1.1] text-[#352115] tracking-tight font-light">
-            Prête à jouer
+            Prêt(e)s à jouer
           </h2>
           <h2 className="text-3.5xl md:text-5.5xl lg:text-[4.5rem] font-serif italic text-[#352115] font-light leading-none">
             sur notre terrain ?
@@ -39,7 +39,7 @@ export default function CallToAction({ onPlanTrip, onGroupQuote }: CallToActionP
             className="bg-[#352115] hover:bg-[#1C0F0A] text-white text-[10px] md:text-xs font-bold tracking-[0.22em] px-8 py-5 transition-all duration-300 shadow-md active:scale-[0.98] uppercase text-center cursor-pointer"
             id="cta-plan-trip-btn"
           >
-            PLANIFIER MON EXPERIENCES
+            PLANIFIER MON EXPERIENCE
           </button>
           
           <button

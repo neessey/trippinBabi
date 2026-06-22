@@ -252,6 +252,22 @@ export interface Booking {
   status: "pending" | "confirmed" | "cancelled";
 }
 
+export interface TripBooking {
+  id?: string;
+  tripTitle: string;
+  clientName: string;
+  clientEmail: string;
+  clientPhone: string;
+  departureDate: string;
+  returnDate: string;
+  paxCount: number;
+  accommodationType: string;
+  budgetRange: string;
+  notes: string;
+  status: "pending" | "confirmed" | "cancelled";
+  createdAt: string;
+}
+
 // Firestore operations for contact, bookings and items
 export async function createContactRequest(request: Omit<ContactRequest, "createdAt">): Promise<void> {
   const path = "messages";
@@ -321,5 +337,40 @@ export async function updateBookingStatus(id: string, status: "pending" | "confi
     await updateDoc(docRef, { status });
   } catch (error: any) {
     handleFirestoreError(error, OperationType.UPDATE, path);
+  }
+}
+
+export async function createTripBooking(data: Omit<TripBooking, "id" | "createdAt" | "status">): Promise<string> {
+  try {
+    const docRef = await addDoc(collection(db, "tripBookings"), {
+      ...data,
+      status: "pending",
+      createdAt: new Date().toISOString()
+    });
+    return docRef.id;
+  } catch (error) {
+    console.error("Erreur lors de la création de la réservation de voyage:", error);
+    throw error;
+  }
+}
+export async function getTripBookings(): Promise<TripBooking[]> {
+  try {
+    const q = query(collection(db, "tripBookings"), orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    } as TripBooking));
+  } catch (error) {
+    console.error("Erreur lors de la récupération des réservations de voyages:", error);
+    return [];
+  }
+}
+export async function updateTripBookingStatus(bookingId: string, status: "pending" | "confirmed" | "cancelled"): Promise<void> {
+  try {
+    await updateDoc(doc(db, "tripBookings", bookingId), { status });
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour du statut:", error);
+    throw error;
   }
 }
